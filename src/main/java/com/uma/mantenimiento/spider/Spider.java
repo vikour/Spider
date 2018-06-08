@@ -14,6 +14,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
@@ -29,6 +30,7 @@ public class Spider {
    private final int MAX_DEEP;
    private List<URL> visitedURLs;
    private List<URL> brokenURLs;
+   private List<URL> loginURLs;
    
    private final int WAIT_UNITL_SECONDS = 10;
 
@@ -65,9 +67,13 @@ public class Spider {
       }
       else {
          DRIVER.get(url.toString());
+         
          printLine(profundidad - 1);         
-         System.out.println(url + "(\u2714)");
+         System.out.println(DRIVER.getTitle() +" ---> " + url + "(\u2714)");
          visitedURLs.add(url);
+         if(DRIVER.getTitle().equals("iDUMA - Servicio de Identidad de la Universidad de Málaga"))
+                comprobarLogin(url);
+      
          urlList = buscarLinks(url);
 
          for (URL innerURL : urlList) {
@@ -76,6 +82,14 @@ public class Spider {
       }
       
    }
+
+    private void comprobarLogin(URL url) {
+        DRIVER.findElement(By.name("adAS_username")).sendKeys("foo@uma.es");
+        DRIVER.findElement(By.name("adAS_password")).sendKeys("foopassword");
+        DRIVER.findElement(By.name("adAS_submit")).click();
+        if(!DRIVER.getTitle().equals("iDUMA - Servicio de Identidad de la Universidad de Málaga"))
+        loginURLs.add(url);
+    }
 
    private boolean existsConnectionNot404(URL url) {
        String response = getResponseHTTP(url);
@@ -97,21 +111,21 @@ public class Spider {
       List<WebElement> aList = null;
       Set<URL> domainUrlsSet = new HashSet<>(); // Para evitar duplicados.
       URL url;
-      String domain = initURL.getHost();
+      String domain = buildDomainBase(initURL);
+      
       int i = 0;
       URL aux;
-      
       //aList = DRIVER_WAIT.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.tagName("a")));
       aList = DRIVER.findElements(By.tagName("a"));
       
        while (i < aList.size()) {
            try {
                url = new URL(aList.get(i).getAttribute("href"));
-               if (url != null && url.getHost().equals(domain) && !url.toString().contains("#"))
+               if (url != null && url.getHost().contains(domain) && !url.toString().contains("#"))
                     domainUrlsSet.add(url);
 
            } catch (StaleElementReferenceException e) {
-               System.out.println("Puto javascript");
+               
            } catch (MalformedURLException ex) {
                
           }
@@ -170,6 +184,23 @@ public class Spider {
    public URL [] getBrokenLinks() {
       return (URL []) brokenURLs.toArray(new URL [brokenURLs.size()]);
    }
+
+    private String buildDomainBase(URL initURL) {
+        String[] splitted = initURL.getHost().split("[.]");
+        StringBuilder sb;
+        
+        if (splitted.length > 2) {
+            sb = new StringBuilder();
+            sb.append(splitted[splitted.length - 2])
+                    .append(".").append(splitted[splitted.length - 1]);
+        } else {
+            sb = new StringBuilder(initURL.getHost());
+        }
+        
+        return sb.toString();
+    }
    
-   
+   public URL[] getBrokenLogin(){
+       return (URL[]) loginURLs.toArray(new URL[loginURLs.size()]);
+   }
 }
