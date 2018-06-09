@@ -32,6 +32,7 @@ public class Spider {
    private final WebDriverWait DRIVER_WAIT;
    private final URL INIT_URL;
    private final int MAX_DEEP;
+   private final int TIME_OUT_SEC = 30;
    private SortedSet<URL> visitedURLs;
    private List<URL> brokenURLs;
    private List<URL> loginURLs;
@@ -50,7 +51,7 @@ public class Spider {
    }
    
    public void iniciar() {
-      DRIVER.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+      DRIVER.manage().timeouts().pageLoadTimeout(TIME_OUT_SEC, TimeUnit.SECONDS);
       visitarUrl(INIT_URL, 1);
       DRIVER.quit();
    }
@@ -79,32 +80,45 @@ public class Spider {
       else {
      
            try {
+               System.out.print("Trying get url " + url + " ... ");
                DRIVER.get(url.toString());
-
+               System.out.println("OK!");
                printLine(profundidad - 1);
-               System.out.print(DRIVER.getTitle() + " ---> " + url + "(OK");
-               visitedURLs.add(url);
-
-               if (DRIVER.getTitle().equals("iDUMA - Servicio de Identidad de la Universidad de Málaga")) {
-                   comprobarLogin(url);
+               System.out.print(DRIVER.getTitle() + ", URL = " + url);
+               
+               // Puede que el recurso no esté y lo indique la página.
+               if (DRIVER.getTitle().toLowerCase().contains("error 404")) {
+                   brokenURLs.add(url);
+                   System.out.println(" (ROTO!)");
+                   visitedURLs.add(url);
                }
+               // Si no, esta se ha conseguido conexión
+               else {
+                   System.out.print(" (OK!");
+                   visitedURLs.add(url);
 
-               // No tiene sentido buscar más enlaces si estamos al nivel máximo de profundidad...
-               if (profundidad < MAX_DEEP) {
-                   urlList = buscarLinks(url);
-                   System.out.println(", " + urlList.size() + " links encontrados)");
-
-                   for (URL innerURL : urlList) {
-                       visitarUrl(innerURL, profundidad + 1);
+                   if (DRIVER.getTitle().equals("iDUMA - Servicio de Identidad de la Universidad de Málaga")) {
+                       comprobarLogin(url);
                    }
+                   // No tiene sentido buscar más enlaces si estamos al nivel máximo de profundidad...
+                   if (profundidad < MAX_DEEP) {
+                       urlList = buscarLinks(url);
+                       System.out.println(", " + urlList.size() + " links encontrados)");
 
-               } else // Completamos el parétesis de antes del IF.
-                   System.out.println(")");
+                       for (URL innerURL : urlList) {
+                           visitarUrl(innerURL, profundidad + 1);
+                       }
+
+                   } else // Completamos el parétesis de antes del IF.
+                       System.out.println(")");
+                   
+               }
 
            } catch (TimeoutException ex) {
                // Timeout, no se ha podido obtener, pero había conexión HTTP.
                // Porque el método existsHTTP lo ha conseguido, pero el driver no.
                // Esto puede ser por Javascript. Que haya una venta modal o un popup.
+               System.out.println("!TIME OUT! " + url);
            }
        }
 
@@ -126,7 +140,8 @@ public class Spider {
 
    private boolean existsConnection404(URL url) {
        String response = getResponseHTTP(url);
-      return response != null && getResponseHTTP(url).equals("Not Found");
+       
+      return (response == null) || (response != null && response.equals("Not Found"));
    }
    
    /**
@@ -182,15 +197,20 @@ public class Spider {
       String response = null;
       
       try {
+          System.out.print("Trying HTTP connection " + url + " ... ");
          connection = (HttpURLConnection) url.openConnection();
+         connection.setConnectTimeout(TIME_OUT_SEC*1000);
          response = connection.getResponseMessage();
+          System.out.println("OK!");
       } catch (MalformedURLException ex) {
-         //System.err.println("MAL FORMADA " + url.toString());
+         System.err.println("MAL FORMADA " + ex.getMessage());
       } catch (IOException ex) {
-         //System.err.println("EXCEPTION : " + url.toString());
+         System.err.println("EXCEPTION : " + ex.getMessage());
+         response = null;
       }
       catch (Exception ex) {
           // Error ineesperado.
+          System.out.println("FAIL!");
       }
       finally {
          

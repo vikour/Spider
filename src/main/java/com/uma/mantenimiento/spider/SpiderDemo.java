@@ -20,7 +20,7 @@ public class SpiderDemo {
    private static final String CHROME_DRIVER_NAME = "webdriver.chrome.driver";
    
    // Configuración de la App
-   private static final String INIT_URL = "http://cau.sci.uma.es/noticias/noticia.php?id=38";
+   private static final String INIT_URL = "http://jabega.uma.es";
    
    public static void main(String[] args) throws MalformedURLException {
       Spider spider;
