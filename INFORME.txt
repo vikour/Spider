@@ -1,0 +1,66 @@
+-----------------------------------------------------------------
+				INFORME DE ERRORES
+	Búsqueda de enlaces rotos en jabega.uma.es
+-----------------------------------------------------------------
+APROBACIONES
+
+	Desarrollado por : 
+		Juanjo Guerrero Ruiz
+		Víctor Manuel Ortiz Guardeño
+		
+RESUMEN:
+	Este documento recoge todos las incidencias encontrados en la página Jábega de la
+	uma, mostrando qué enlaces o páginas de login fallan. Al final también habrá una
+	sección donde se hablará de cómo resolver el problema de detectar páginas huérfanas
+	o problemas de internacialización.
+
+OBJETIVOS DEL DOCUMENTO:	
+	- Informar de todos los enalces rotos de Jábega.
+	- Informar de todos los inicios de sesión (login) erróneos.
+	- Hablar sobre la detección de páginas huérfanas.
+	- Hablar sobre la internacialización de las páginas.
+
+DOCUMENTOS RELACIONADOS Y REFERENCIAS:
+	- Spider.java contiene la clase que visita todos los enlaces.
+	- SpiderDemo.java contiene la clase con un método principal para probar la anterior.
+	
+	Enalces usados.
+	- Boaz Ronkin, How to find an resolve orphan site pages?, 15/06/2017, 
+	  URL https://www.brightedge.com/blog/identify-orphan-pages/
+
+-----------------------------------------------------------------------------------------
+
+PREPARACIÓN DE LA PRUEBA
+	Este informe ha sido hecho con los resultados de la clase SpiderDemo analizando la 
+	página a una profundidad de 6.
+	
+INFORME DE ENLACES ROTOS
+	Se han encontrado 4 links rotos de 915 visitados.
+	Los links rotos son : 
+		- http://ofertaidi.uma.es/quimica-teorica.php
+		- http://ofertaidi.uma.es/dinamica-vegetal.php
+		- https://www.uma.es/chat/client.php?locale=sp
+		- http://www.uma.es/publicadores/servcomunidad/wwwuma/1047.pdf
+		
+INFORME DE INICIO DE SESIÓN ERRÓNEOS
+	No se han encontrado fallos al iniciar sesión.
+	
+CUESTIONES SOLICITADAS
+
+	- ¿Cómo podríamos detectar páginas huérfanas?
+	
+		No podríamos detectarlas sólo con nuestro programa analizando la página web desde
+		el lado del cliente. Necesitaríamos además una lista con todas las páginas que contiene
+		el servidor.
+		
+		Una vez se tengan los resultados de qué páginas son visitadas desde un cliente en la web, y 
+		qué páginas tiene el servidor; se hace un acomparación y se encuentra qué páginas no están
+		en la búsquedad de internet. Estas pueden ser huérfanas.
+		
+		¿Por qué pueden? Bueno, muchas páginas web tienen "puertas traseras" para los administradores
+		de éstas. Para cada una de estas puertas habría que hacer un análisis de enlaces con el Spider.
+		
+		Una vez tratado el párrafo anterior, podríamos detectar aquellas que realmente no se acceden 
+		desde ninguna puerta trasera.
+		
+	- Exploramos el uso de la internalización y las Cookies.

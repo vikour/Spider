@@ -16,11 +16,11 @@ import org.openqa.selenium.chrome.ChromeDriver;
 public class SpiderDemo {
    
    // Configuración del driver.
-   private static final String URL_CHROME_DRIVER = "C:\\Users\\GRJuanjo\\Desktop\\chromedriver.exe";
+   private static final String URL_CHROME_DRIVER = "C:\\Users\\Vikour\\Downloads\\chromedriver.exe";
    private static final String CHROME_DRIVER_NAME = "webdriver.chrome.driver";
    
    // Configuración de la App
-   private static final String INIT_URL = "http://www.uma.es";
+   private static final String INIT_URL = "http://cau.sci.uma.es/noticias/noticia.php?id=38";
    
    public static void main(String[] args) throws MalformedURLException {
       Spider spider;
@@ -30,7 +30,7 @@ public class SpiderDemo {
       System.setProperty(CHROME_DRIVER_NAME, URL_CHROME_DRIVER);
       chromeDriver = new ChromeDriver();
       
-      spider = new Spider(chromeDriver, new URL(INIT_URL), 3);
+      spider = new Spider(chromeDriver, new URL(INIT_URL), 10);
       spider.iniciar();
       
       System.out.println("\nFIN DE BÚSQUEDA");
@@ -50,6 +50,7 @@ public class SpiderDemo {
           for(URL log : loginLinks)
               System.out.println(" - " + log);
       }
+      
    }
    
 }
