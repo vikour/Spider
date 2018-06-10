@@ -1,4 +1,4 @@
------------------------------------------------------------------
+﻿-----------------------------------------------------------------
 				INFORME DE ERRORES
 	Búsqueda de enlaces rotos en jabega.uma.es
 -----------------------------------------------------------------
@@ -23,6 +23,7 @@ OBJETIVOS DEL DOCUMENTO:
 DOCUMENTOS RELACIONADOS Y REFERENCIAS:
 	- Spider.java contiene la clase que visita todos los enlaces.
 	- SpiderDemo.java contiene la clase con un método principal para probar la anterior.
+	- jabega.uma.es-profundidad-6 : log del programa en el que aparece el resultado del programa.
 	
 	Enalces usados.
 	- Boaz Ronkin, How to find an resolve orphan site pages?, 15/06/2017, 
@@ -35,12 +36,26 @@ PREPARACIÓN DE LA PRUEBA
 	página a una profundidad de 6.
 	
 INFORME DE ENLACES ROTOS
-	Se han encontrado 4 links rotos de 915 visitados.
+	Se han encontrado 18 links rotos de 852 visitados.
 	Los links rotos son : 
-		- http://ofertaidi.uma.es/quimica-teorica.php
-		- http://ofertaidi.uma.es/dinamica-vegetal.php
-		- https://www.uma.es/chat/client.php?locale=sp
-		- http://www.uma.es/publicadores/servcomunidad/wwwuma/1047.pdf
+		 - http://ofertaidi.uma.es/quimica-teorica.php
+		 - http://ofertaidi.uma.es/dinamica-vegetal.php
+		 - https://www.uma.es/facultad-de-ciencias/info/42396/horarios-ad-hoc-ciencias/
+		 - https://www.uma.es/chat/client.php?locale=sp
+		 - mailto:buzon@bbl.uma.es
+		 - http://www.uma.es/publicadores/servcomunidad/wwwuma/1047.pdf
+		 - https://idp.uma.es/adas/authn/tls/http-tls.php?adAS_request_id=6075aa80-6cb6-11e8-80dc-7b2272657175
+		 - https://pinuma.uma.es/
+		 - http://asae1.sci.uma.es:8080/detectorComponentes/
+		 - http://fresquito.sci.uma.es:8080/goc/login.jsf
+		 - http://portafirma.sci.uma.es:8080/pfirma/
+		 - http://asae1.sci.uma.es:8080/validClient/jsp/entrada.jsp
+		 - http://portafirma.sci.uma.es:8080/verifirma/
+		 - https://idp.uma.es/adas/authn/tls/http-tls.php?adAS_request_id=9b5dcb30-6cb7-11e8-8052-7b2272657175
+		 - https://idp.uma.es/adas/authn/tls/http-tls.php?adAS_request_id=1245e3e0-6cb8-11e8-8076-7b2272657175
+		 - https://idp.uma.es/adas/authn/tls/http-tls.php?adAS_request_id=2f124a20-6cb3-11e8-80ee-7b2272657175
+		 - http://metabuscadorbbl.uma.es:8487/iii/mfrpro-malag/loadSearchPage.do?searchpage=simple&searchtype=simple&accountid=malag&accountpassword=malag
+		 - https://idp.uma.es/adas/authn/tls/http-tls.php?adAS_request_id=4d569360-6cb8-11e8-80a3-7b2272657175
 		
 INFORME DE INICIO DE SESIÓN ERRÓNEOS
 	No se han encontrado fallos al iniciar sesión.
@@ -64,3 +79,10 @@ CUESTIONES SOLICITADAS
 		desde ninguna puerta trasera.
 		
 	- Exploramos el uso de la internalización y las Cookies.
+
+		Dentro del testing automatizado de páginas web, la internacionalización puede resultar util a la
+		hora de realizar pruebas en las que una página está disponible en varios idiomas, eligiendo por 
+		ejemplo los idiomas (dentro de los que en la página están disponibles) sobre los que queremos 		realizar las diferentes pruebas.
+		
+		Las cookies, por otra parte, pueden resultar útiles cuando una acción como un inicio de sesión sea 		requerida continuadamente durante las pruebas. Almacenando los parámetros de la cookie de inicio de 			sesión en un archivo o incluso guardando la misma cookie en una variable del mismo tipo, podemos 		ahorrarnos el tener que rellenar el formulario cada vez que se requiera el inicio de sesión, 		recurriendo en lugar de ello a enviar la cookie con los credenciales al servidor directamente.
+	 

@@ -2,6 +2,9 @@
 package com.uma.mantenimiento.spider;
 
 import java.io.IOException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,7 +21,6 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
@@ -33,12 +35,21 @@ public class Spider {
    private final URL INIT_URL;
    private final int MAX_DEEP;
    private final int TIME_OUT_SEC = 30;
+   
    private SortedSet<URL> visitedURLs;
    private List<URL> brokenURLs;
    private List<URL> loginURLs;
    
    private final int WAIT_UNITL_SECONDS = 10;
+   
+   private class UrlStringComparator implements Comparator<URL> {
 
+        @Override
+        public int compare(URL o1, URL o2) {
+            return o1.toString().compareTo(o2.toString());
+        }
+       
+   }
    
    public Spider(WebDriver driver, URL initURL, int max_deep) {
       this.INIT_URL = initURL;
@@ -80,9 +91,7 @@ public class Spider {
       else {
      
            try {
-               System.out.print("Trying get url " + url + " ... ");
                DRIVER.get(url.toString());
-               System.out.println("OK!");
                printLine(profundidad - 1);
                System.out.print(DRIVER.getTitle() + ", URL = " + url);
                
@@ -141,7 +150,7 @@ public class Spider {
    private boolean existsConnection404(URL url) {
        String response = getResponseHTTP(url);
        
-      return (response == null) || (response != null && response.equals("Not Found"));
+      return (response == null) || (response.equals("Not Found"));
    }
    
    /**
@@ -196,17 +205,15 @@ public class Spider {
       HttpURLConnection connection = null;
       String response = null;
       
+
       try {
-          System.out.print("Trying HTTP connection " + url + " ... ");
-         connection = (HttpURLConnection) url.openConnection();
-         connection.setConnectTimeout(TIME_OUT_SEC*1000);
-         response = connection.getResponseMessage();
-          System.out.println("OK!");
+          CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+          connection = (HttpURLConnection) url.openConnection();
+          connection.setConnectTimeout(TIME_OUT_SEC*1000); // Setting time out.
+          response = connection.getResponseMessage();
       } catch (MalformedURLException ex) {
-         System.err.println("MAL FORMADA " + ex.getMessage());
       } catch (IOException ex) {
-         System.err.println("EXCEPTION : " + ex.getMessage());
-         response = null;
+          response = null; // Time out!
       }
       catch (Exception ex) {
           // Error ineesperado.
@@ -261,12 +268,4 @@ public class Spider {
        return (URL[]) loginURLs.toArray(new URL[loginURLs.size()]);
    }
    
-   private class UrlStringComparator implements Comparator<URL> {
-
-        @Override
-        public int compare(URL o1, URL o2) {
-            return o1.toString().compareTo(o2.toString());
-        }
-       
-   }
 }
